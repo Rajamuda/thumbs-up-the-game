@@ -1,0 +1,172 @@
+@author       : Kelompok 1
+@member       : - Fadhlal K. Surado (G64140015)
+                - Maulana Mhd. Hafiz (G64140049)
+@project      : Thumbs Up: The Game
+
+@description  : 
+Permainan dengan menggunakan dua jempol. Dimainkan dua orang atau lebih dimana setiap pemain menebak jumlah jempol semua pemain yang akan terangkat. Jika seorang pemain menebak dengan benar, maka jempolnya tersisa satu. Begitu seterusnya hingga tersisa 1 pemain.
+
+@howToUse     :
+1. Masukkan banyaknya pemain yang ingin bermain (misal: n -> 1 adalah human, n-1 adalah komputer)
+2. Giliran ‘human’ -> masukkan tebakan jumlah jempol yang akan terangkat kemudian masukkan berapa jempol yang ingin diangkat.
+3. Giliran ‘computer’ -> cukup masukkan berapa jempol yang ingin diangkat.
+4. Kondisi tebakan pemain benar -> Jumlah jempol pemain berkurang satu. Jika jumlah jempol sudah nol maka dianggap menang.
+
+
+; note :
+please compress (.zip) this file with your project inside.
+then send to orkom@agri.web.id (Deadline : May 25, 23.59)
+
+
+; please copy your short code to these lessons (if any).
+@lessons :
+
+1. arithmetics & boolean:
+	...
+	mov ecx, [k]
+	dec ecx
+	add eax, [random+ecx*4]
+	mov ecx, [k]
+	mov edx, 0
+	mov ebx, [jempol_player+ecx*4]
+	add ebx, 1
+	mov ecx, ebx
+	div ecx
+	...
+	mov eax, [jempol_player+ecx*4]
+	sub eax, 1
+	...
+
+
+2. stack & array:
+	mov dword[jempol_player+ecx*4], 2	;array
+	cmp ecx, [n_pemain]
+	je retu
+	inc ecx
+	jmp inputJempol
+
+	...
+	push ebx				;stack
+	push ecx
+	push displayJuara
+	call printf
+	add esp, 8
+
+	...
+	
+
+3. comparison & conditional:
+	...
+	mov ecx, [i]
+	cmp ecx, 1
+	je human
+	jmp computer
+	...
+
+
+
+4. looping & jump:
+	...
+   loopP1:
+	mov ecx, [k]
+	cmp ecx, [n_pemain]
+	ja p1TurnNext3
+
+	mov eax, 13
+	mov ebx, 0
+	int 0x80
+
+	mov ecx, [k]
+	mov edx, 0
+	mov ebx, 0
+	mov ebx, [jempol_player+ecx*4]
+	add ebx, 1
+	mov ecx, ebx
+	div ecx
+
+	mov ecx, [k]
+	dec ecx
+	add eax, [random+ecx*4]
+
+	mov ecx, [k]
+	mov edx, 0
+	mov ebx, 0
+	mov ebx, [jempol_player+ecx*4]
+	add ebx, 1
+	mov ecx, ebx
+	div ecx
+	
+	mov ecx, [k]
+	mov dword[random+ecx*4], edx
+
+	mov eax, [jempol_player+ecx*4]
+	cmp eax, 0
+	je resetRandom
+
+	add dword[k],1
+	jmp loopP1
+	...
+
+5. input & output:
+	push n_pemain				;input banyak pemain
+	push int_frm
+	call scanf
+	add esp, 8
+
+	...
+	statusPemain:			;output status berdasarkan
+	push t_status_atas		 input banyaknya pemain
+	call printf
+	add esp, 4
+
+	;if (i<n_pemain) i=1
+	call cekIteration
+
+	mov dword[k], 1
+	mov dword[count], 0
+	mov dword[sum_thumb], 0
+	jmp forLoop
+	...
+
+
+
+6. procedure (call):
+   main:
+	call clrScr
+	call menuMain
+	call inisiasi
+	...
+
+
+
+7. system call:
+	...
+	mov eax, 13
+	mov ebx, 0
+	int 0x80
+	...
+	mov eax, 4
+	mov ebx, 1
+	mov ecx, youwrong
+	mov edx, len_ywr
+	int 0x80
+	...
+
+8. string:
+-
+
+
+9. floating point:
+-
+
+
+10. high level language or calling from C:
+	...
+	extern printf
+	extern scanf
+	...
+	push dword[random+ecx*4]
+	push dword[k]
+	push res_comp
+	call printf
+	add esp, 12
